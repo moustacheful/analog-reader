@@ -84,3 +84,12 @@ Once done you can't start listening again with the same reader.
 ```js
 reader.close()
 ```
+
+## Development
+
+Use `npm install` and then run `npm start` to compile from coffeescript.
+
+#### Tests
+TODO proper testing.
+
+`npm run test` currently runs a `webpack-dev-server` with a mocked up `read` method to test the sampling behaviour.
