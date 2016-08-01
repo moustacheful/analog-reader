@@ -65,7 +65,7 @@ _.map(tests, function(test){
 
 	var reader = new AnalogReaderTest();
 	reader.sampleSize = test.sampleSize;
-	reader.readDelay = 10;
+	reader.readDelay = 2;
 
 	reader.watch(0)
 	reader.watch(1)
