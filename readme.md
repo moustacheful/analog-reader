@@ -17,13 +17,13 @@ For instructions on wiring the MCP3008 to a Raspberry Pi, see [here](https://lea
 After that, configure the pins to be used and initialize the reader
 
 ```js
-const CLOCKPIN = 18
-const MOSIPIN = 24
-const MISOPIN = 23
-const CSPIN = 25
+const AnalogReader = require('analog-reader');
+const CLOCKPIN = 18;
+const MOSIPIN = 24;
+const MISOPIN = 23;
+const CSPIN = 25;
 
 var reader = new AnalogReader(CLOCKPIN,MOSIPIN,MISOPIN,CSPIN);
-
 ```
 
 After initializing you can change some properties, such as the `readDelay`, `sampleSize` and `watch`/`unwatch` inputs.
@@ -36,7 +36,6 @@ reader.readDelay = 2;
 // Setting a higher sample size will take longer. It's a tradeoff between accuracy and speed. Defaults to 50.
 
 reader.sampleSize = 50;
-
 ```
 
 
@@ -48,8 +47,7 @@ reader.watch(1);
 reader.watch(2);
 
 // Stop watching input 1
-reader.unwatch(1)
-
+reader.unwatch(1);
 ```
 
 Set up a listener
@@ -67,14 +65,13 @@ reader.on('value', function(evt){
 
 // Starts reading!
 reader.start()
-
 ```
-Finally, to stop reading, try
-```js
 
+Finally, to stop reading, try
+
+```js
 // Stops reading! Can be resumed later!
 reader.stop()
-
 ```
 
 To manually destroy the reader, use the following. This will `unexport` and free up the used pins. It should be automatically called when stopping your program (`SIGINT`) as well.
