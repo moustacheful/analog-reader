@@ -3,21 +3,23 @@ _ = require('lodash')
 GPIO = require('onoff').Gpio
 
 module.exports = class AnalogReader extends EventEmitter
-	constructor: (clockpin,mosipin,misopin,cspin)->
-		@mosipin = new GPIO(mosipin,'out')
-		@misopin = new GPIO(misopin,'in')
-		@clockpin = new GPIO(clockpin,'out')
-		@cspin = new GPIO(cspin,'out')
-		
+	constructor: (clockpin, mosipin, misopin, cspin, @_mockFn)->
+		unless @_mockFn
+			@mosipin = new GPIO(mosipin, 'out')
+			@misopin = new GPIO(misopin, 'in')
+			@clockpin = new GPIO(clockpin, 'out')
+			@cspin = new GPIO(cspin, 'out')
+
 		@watched = []
 		@sampleSize = 50
 		@_watchHandle = null
 		@readDelay = 2
-
-		process.on 'SIGINT', ->
-			this.close()
+		process.on 'SIGINT', @close
 
 	read: (adcnum)->
+		if @_mockFn 
+			return @_mockFn(adcnum)
+
 		return -1 if ! (0 <= adcnum < 7)
 
 		@cspin.writeSync(1)
@@ -38,7 +40,6 @@ module.exports = class AnalogReader extends EventEmitter
 			commandout <<= 1
 			@clockpin.writeSync(1)
 			@clockpin.writeSync(0)
-
 
 		adcout = 0
 
@@ -89,10 +90,11 @@ module.exports = class AnalogReader extends EventEmitter
 			clearTimeout(@_watchHandle)
 			@_watchHandle = null
 
-
 	close: =>
-		@mosipin.unexport()
-		@misopin.unexport()
-		@clockpin.unexport()
-		@cspin.unexport()
+		unless @_mockFn
+			@mosipin.unexport()
+			@misopin.unexport()
+			@clockpin.unexport()
+			@cspin.unexport()
+	
 		@stop()
